@@ -14,7 +14,7 @@ def load_and_prepare_data(filepath: str) -> pd.DataFrame:
     Carga el dataset y realiza la limpieza y codificación de variables categóricas.
     """
     if not os.path.exists(filepath):
-        raise FileNotFoundError(f"No se encontró el archivo: {filepath}")
+        raise FileNotFoundError(f"Arquivo não encontrado: {filepath}")
         
     df = pd.read_csv(filepath)
     
@@ -48,9 +48,9 @@ def evaluate_model(y_true, y_pred, model_name: str):
     r2 = r2_score(y_true, y_pred)
     
     print(f"--- Resultados para {model_name} ---")
-    print(f"MAE (Error Absoluto Medio): {mae:.4f} kg")
-    print(f"RMSE (Raíz del Error Cuadrático Medio): {rmse:.4f} kg")
-    print(f"R² Score: {r2:.4f}\n")
+    print(f"MAE (Erro Absoluto Médio): {mae:.4f} kg")
+    print(f"RMSE (Raiz do Erro Quadrático Médio): {rmse:.4f} kg")
+    print(f"Score R²: {r2:.4f}\n")
     
     return mae, rmse, r2
 
@@ -80,8 +80,8 @@ def plot_feature_importance(model, feature_names, top_n=10):
         y='Feature', 
         palette='viridis'
     )
-    plt.title(f'Top {top_n} Factores que influyen en el Éxito de la Dieta')
-    plt.xlabel('Importancia Relativa')
+    plt.title(f'Top {top_n} Fatores que influenciam o Sucesso da Dieta')
+    plt.xlabel('Importância Relativa')
     plt.ylabel('Característica')
     plt.tight_layout()
     plt.show()
@@ -92,26 +92,26 @@ def main():
     data_path = os.path.join(base_dir, '..', 'data', 'clustered_data.csv')
     
     try:
-        print("1. Cargando y preparando datos...")
+        print("1. Carregando e preparando dados...")
         df = load_and_prepare_data(data_path)
-        print(f"Datos listos. Dimensiones tras One-Hot Encoding: {df.shape}")
+        print(f"Dados prontos. Dimensões após One-Hot Encoding: {df.shape}")
         
         # 3. Separar Variable Objetivo (y) y Características (X)
         target_col = 'weight_change_kg_6m'
         if target_col not in df.columns:
-            raise ValueError(f"No se encontró la variable objetivo '{target_col}'")
+            raise ValueError(f"Variável alvo '{target_col}' não encontrada")
             
         X = df.drop(columns=[target_col])
         y = df[target_col]
         
         # 4. División Train / Test (80% / 20%)
-        print("\n2. Dividiendo datos en Train (80%) y Test (20%)...")
+        print("\n2. Dividindo dados em Treino (80%) e Teste (20%)...")
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        print(f"Set de Entrenamiento: {X_train.shape[0]} filas")
-        print(f"Set de Prueba: {X_test.shape[0]} filas")
+        print(f"Conjunto de Treino: {X_train.shape[0]} linhas")
+        print(f"Conjunto de Teste: {X_test.shape[0]} linhas")
         
         # 5. Entrenar y Evaluar Ridge Regression (Modelo Lineal Regularizado)
-        print("\n3. Entrenando modelos...\n")
+        print("\n3. Treinando modelos...\n")
         ridge_model = Ridge(alpha=1.0, random_state=42)
         ridge_model.fit(X_train, y_train)
         y_pred_ridge = ridge_model.predict(X_test)
@@ -124,14 +124,14 @@ def main():
         evaluate_model(y_test, y_pred_rf, "Random Forest Regressor")
         
         # 7. Graficar Importancia de Características (Feature Importance)
-        print("4. Generando gráfico de Feature Importance...")
+        print("4. Gerando gráfico de Importância de Características...")
         plot_feature_importance(rf_model, X_train.columns, top_n=10)
         
     except FileNotFoundError as e:
-        print(f"\n[Error] {e}")
-        print("Asegúrate de ejecutar primero el script de clustering para generar 'clustered_data.csv'.")
+        print(f"\n[Erro] {e}")
+        print("Certifique-se de executar primeiro o script de clustering para gerar 'clustered_data.csv'.")
     except Exception as e:
-        print(f"\n[Error inesperado] {e}")
+        print(f"\n[Erro inesperado] {e}")
 
 if __name__ == "__main__":
     main()

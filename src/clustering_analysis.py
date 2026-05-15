@@ -13,7 +13,7 @@ def load_and_clean_data(filepath: str) -> pd.DataFrame:
     Carga el dataset y realiza la limpieza final (eliminación de nulos en target e imputación).
     """
     if not os.path.exists(filepath):
-        raise FileNotFoundError(f"El archivo {filepath} no existe. Por favor, asegúrate de haber generado processed_data.csv primero.")
+        raise FileNotFoundError(f"O arquivo {filepath} não existe. Por favor, certifique-se de ter gerado processed_data.csv primeiro.")
     
     df = pd.read_csv(filepath)
     
@@ -22,9 +22,9 @@ def load_and_clean_data(filepath: str) -> pd.DataFrame:
     if target_col in df.columns:
         initial_len = len(df)
         df = df.dropna(subset=[target_col])
-        print(f"Filas eliminadas por nulos en target: {initial_len - len(df)}")
+        print(f"Linhas removidas por nulos no target: {initial_len - len(df)}")
     else:
-        print(f"Advertencia: La columna objetivo '{target_col}' no se encuentra en el dataframe.")
+        print(f"Aviso: A coluna alvo '{target_col}' não se encontra no dataframe.")
         
     # 2. Imputar valores nulos en 'age' y 'sleep_hours' usando KNNImputer
     cols_to_impute = ['age', 'sleep_hours']
@@ -79,9 +79,9 @@ def find_optimal_k(X_scaled: np.ndarray, max_k: int = 10):
     
     plt.subplot(1, 2, 1)
     plt.plot(K_range, inertia, marker='o', linestyle='--')
-    plt.title('Método del Codo (Elbow Method)')
+    plt.title('Método do Cotovelo (Elbow Method)')
     plt.xlabel('Número de Clusters (k)')
-    plt.ylabel('Inercia')
+    plt.ylabel('Inércia')
     plt.xticks(K_range)
     
     # Visualización del Silhouette Score
@@ -120,18 +120,18 @@ def analyze_clusters(df: pd.DataFrame):
     if 'weight_change_kg_6m' in df.columns:
         plt.figure(figsize=(8, 5))
         sns.boxplot(data=df, x='cluster', y='weight_change_kg_6m', palette='viridis', order=sorted(df['cluster'].unique()))
-        plt.title('Distribución de Cambio de Peso por Cluster')
+        plt.title('Distribuição da Mudança de Peso por Cluster')
         plt.xlabel('Cluster')
-        plt.ylabel('Cambio de Peso a 6 meses (kg)')
+        plt.ylabel('Mudança de Peso em 6 meses (kg)')
         plt.show()
     
     # 2. Scatterplot: Edad vs Cambio de peso según el cluster
     if 'age' in df.columns and 'weight_change_kg_6m' in df.columns:
         plt.figure(figsize=(8, 5))
         sns.scatterplot(data=df, x='age', y='weight_change_kg_6m', hue='cluster', palette='viridis', alpha=0.7, hue_order=sorted(df['cluster'].unique()))
-        plt.title('Edad vs Cambio de Peso (Agrupado por Cluster)')
-        plt.xlabel('Edad')
-        plt.ylabel('Cambio de Peso a 6 meses (kg)')
+        plt.title('Idade vs Mudança de Peso (Agrupado por Cluster)')
+        plt.xlabel('Idade')
+        plt.ylabel('Mudança de Peso em 6 meses (kg)')
         plt.legend(title='Grupo', bbox_to_anchor=(1.05, 1), loc='upper left')
         plt.tight_layout()
         plt.show()
@@ -143,7 +143,7 @@ def analyze_clusters(df: pd.DataFrame):
     
     if len(valid_features) > 2:
         sns.pairplot(df[valid_features], hue='cluster', palette='viridis', corner=True, plot_kws={'alpha': 0.6})
-        plt.suptitle('Relaciones entre variables por Cluster', y=1.02)
+        plt.suptitle('Relações entre variáveis por Cluster', y=1.02)
         plt.show()
 
 def main():
@@ -152,7 +152,7 @@ def main():
     data_path = os.path.join(base_dir, '..', 'data', 'processed_data.csv')
     
     # Nota de pre-ejecución
-    print(f"Buscando el dataset en: {os.path.normpath(data_path)}")
+    print(f"Procurando o dataset em: {os.path.normpath(data_path)}")
     
     # Características a utilizar en el clustering
     # Ajusta los nombres si difieren en el dataset real (ej: motivitation_score)
@@ -165,38 +165,38 @@ def main():
     ]
     
     try:
-        print("\n--- 1. Limpieza Final ---")
+        print("\n--- 1. Limpeza Final ---")
         df = load_and_clean_data(data_path)
-        print(f"Dimensiones finales del dataset: {df.shape}")
+        print(f"Dimensões finais do dataset: {df.shape}")
         
-        print("\n--- 2. Preprocesamiento para Clustering ---")
+        print("\n--- 2. Pré-processamento para Clustering ---")
         X_scaled, used_features = preprocess_for_clustering(df, clustering_features)
-        print(f"Características analizadas: {used_features}")
+        print(f"Características analisadas: {used_features}")
         
         # --- 3. Encontrar k óptimo ---
         # ATENCIÓN: Descomentar la siguiente línea para visualizar el codo y silhouette
         # Esta gráfica te ayudará a decidir el número 'optimal_k' a usar
-        # print("\n--- Evaluando número óptimo de clusters (k) ---")
+        # print("\n--- Avaliando número ideal de clusters (k) ---")
         # find_optimal_k(X_scaled, max_k=10)
         
         # Asumiendo que determinamos k=4 tras ver las métricas (ajustar este valor)
         optimal_k = 4  
-        print(f"\n--- 3. Aplicando K-Means con k={optimal_k} ---")
+        print(f"\n--- 3. Aplicando K-Means com k={optimal_k} ---")
         df = apply_kmeans(df, X_scaled, optimal_k)
         
-        print("\n--- 4. Análisis y Visualización de Grupos ---")
+        print("\n--- 4. Análise e Visualização de Grupos ---")
         analyze_clusters(df)
         
         # Guardado opcional de los datos con clusters asignados
         output_path = os.path.join(base_dir, '..', 'data', 'clustered_data.csv')
         df.to_csv(output_path, index=False)
-        print(f"\n[Éxito] Proceso finalizado. Dataset con etiquetas de clusters guardado en: {os.path.normpath(output_path)}")
+        print(f"\n[Sucesso] Processo finalizado. Dataset com rótulos de clusters salvo em: {os.path.normpath(output_path)}")
 
     except FileNotFoundError as e:
-        print(f"\n[Error] {e}")
-        print("Asegúrate de ejecutar tu script principal para crear y guardar 'processed_data.csv' (ej: dataframe.to_csv('data/processed_data.csv', index=False))")
+        print(f"\n[Erro] {e}")
+        print("Certifique-se de executar seu script principal para criar e salvar 'processed_data.csv' (ex: dataframe.to_csv('data/processed_data.csv', index=False))")
     except Exception as e:
-        print(f"\n[Error inesperado] {e}")
+        print(f"\n[Erro inesperado] {e}")
 
 if __name__ == "__main__":
     main()
