@@ -24,13 +24,25 @@ merge_f = pd.merge(merge_f, nutris, on='nutritionist_id', how='left')
 colm_to_dlt = ['bmi_redundant', 'experience_years']
 merge_f.drop(columns=[c for c in colm_to_dlt if c in merge_f.columns], inplace=True)
 
-merge_f['years_experience'] = merge_f['years_experience'].fillna(merge_f['years_experience'].median())
-merge_f['approach'] = merge_f['approach'].fillna('unknown')
-merge_f['motivation_score'] = merge_f['motivation_score'].fillna(merge_f['motivation_score'].mean())
-merge_f.loc[merge_f['years_experience'] > 60, 'years_experience'] = merge_f['years_experience'].median()
+if 'years_experience' in merge_f.columns:
+    median_exp = merge_f.loc[merge_f['years_experience'] <= 60, 'years_experience'].median()
+    merge_f.loc[merge_f['years_experience'] > 60, 'years_experience'] = median_exp
+    merge_f['years_experience'] = merge_f['years_experience'].fillna(median_exp)
 
-# 5. GUARDADO ROBUSTO
+if 'approach' in merge_f.columns:
+    merge_f['approach'] = merge_f['approach'].astype(str).str.strip().str.lower()
+    merge_f['approach'] = merge_f['approach'].replace('nan', 'unknown')
+
+if 'motivation_score' in merge_f.columns:
+    merge_f['motivation_score'] = merge_f['motivation_score'].fillna(merge_f['motivation_score'].mean())
+
+if 'weight_change_kg_6m' in merge_f.columns and 'baseline_weight_kg' in merge_f.columns:
+    merge_f['weight_change_pct'] = (merge_f['weight_change_kg_6m']) / merge_f['baseline_weight_kg'] * 100
+
+# 6. GUARDADO ROBUSTO
 ruta_guardado = os.path.join(directorio_data, 'processed_data.csv')
 merge_f.to_csv(ruta_guardado, index=False)
 
-print(f"¡Éxito! Archivo guardado correctamente en: {ruta_guardado}")
+print(f"Archivo guardado correctamente en: {ruta_guardado}")
+print(f"Dataset unificado y limpio guardado en: {os.path.normpath(ruta_guardado)}")
+print(f"Dimensiones del dataset: {merge_f.shape[0]} filas y {merge_f.shape[1]} columnas.")
