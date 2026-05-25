@@ -1,0 +1,46 @@
+\chapter{Limpeza e Processamento de Dados}
+\label{chap:limpeza}
+
+\section{Visão Geral}
+A limpeza e o processamento foram concentrados no \textit{script} \texttt{data\_cleaning.py}, que recebe o conjunto integrado e produz o ficheiro \texttt{cleaned\_data.csv}. Durante o desenvolvimento, o grupo criou também dois \textit{scripts} auxiliares, \texttt{fix\_sex\_column.py} e \texttt{fix\_text\_columns.py}, à medida que foram sendo detetados problemas nas colunas de texto. Numa fase posterior, a lógica destes dois \textit{scripts} foi integrada diretamente no \textit{script} principal de limpeza, de modo a que todo o processamento ficasse num único passo. Os dois ficheiros auxiliares foram mantidos no repositório por documentarem a evolução do trabalho.
+
+\section{Normalização das Colunas de Texto}
+A coluna \texttt{sex} foi a que apresentou pior estado. O mesmo conceito aparecia escrito de várias formas diferentes, incluindo \texttt{F}, \texttt{f}, \texttt{ F}, \texttt{female}, \texttt{M}, \texttt{m}, \texttt{M } e \texttt{male}. Sem tratamento, os passos seguintes tratariam cada variante como uma categoria distinta. Este problema só ficou totalmente visível na fase de análise exploratória, quando o resumo por sexo apresentou oito grupos em vez de dois. A solução adotada converte a coluna para texto, remove espaços, passa tudo a maiúsculas e substitui \texttt{FEMALE} por \texttt{F} e \texttt{MALE} por \texttt{M}, ficando apenas dois valores válidos.
+
+As restantes colunas de texto, \texttt{diet\_name}, \texttt{diet\_type}, \texttt{approach} e \texttt{specialty}, tinham um problema semelhante, com espaços a mais e diferenças de maiúsculas, como em \texttt{strict}, \texttt{Strict } e \texttt{ STRICT}. A solução aplica a estas colunas a remoção de espaços e uma normalização de formato em que a primeira letra fica maiúscula e as restantes minúsculas. Assim, todas as variantes de um mesmo valor passam a ser idênticas.
+
+\section{Remoção de Colunas Redundantes}
+A inspeção do conjunto integrado revelou colunas que não acrescentavam informação. A coluna \texttt{bmi\_redundant} era uma cópia de \texttt{baseline\_bmi}. A coluna \texttt{experience\_years} era idêntica a \texttt{years\_experience}. Estas duas colunas foram eliminadas para evitar redundância e o risco de introduzir correlações artificiais na análise. Com esta remoção, o conjunto passou de 31 para 29 colunas.
+
+\section{Tratamento de Valores em Falta}
+Várias colunas tinham valores em falta, conforme se resume na tabela \ref{tab:nulos}. O grupo aplicou estratégias diferentes consoante o tipo de coluna.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|r|l|}
+\hline
+\textbf{Coluna} & \textbf{Valores em falta} & \textbf{Estratégia} \\
+\hline
+\texttt{approach} & 289 & Moda \\
+\texttt{fiber\_target\_g} & 254 & Mediana \\
+\texttt{sodium\_limit\_mg} & 252 & Mediana \\
+\texttt{years\_experience} & 245 & Mediana \\
+\texttt{sleep\_hours} & 200 & Mediana \\
+\texttt{mean\_adherence\_pct} & 150 & Remoção da linha \\
+\texttt{adherence\_ratio} & 150 & Remoção da linha \\
+\texttt{age} & 143 & Mediana \\
+\texttt{motivation\_score} & 129 & Mediana \\
+\texttt{weight\_change\_kg\_6m} & 151 & Remoção da linha \\
+\hline
+\end{tabular}
+\caption{Valores em falta no conjunto integrado e estratégia adotada.}
+\label{tab:nulos}
+\end{table}
+
+As linhas sem valor nas variáveis-chave \texttt{weight\_change\_kg\_6m} e \texttt{adherence\_ratio} foram removidas. A razão é que estas variáveis representam o resultado da dieta, e preencher valores em falta no resultado introduziria informação artificial que enviesaria toda a análise. Esta remoção eliminou 290 linhas. Para as restantes colunas numéricas, os valores em falta foram preenchidos com a mediana, por esta ser uma medida pouco sensível a valores extremos. As colunas categóricas foram preenchidas com a moda, ou seja, o valor mais frequente.
+
+\section{Tratamento de Outliers}
+Para o tratamento de \textit{outliers} foi aplicado o método do intervalo interquartil às variáveis \texttt{age}, \texttt{baseline\_weight\_kg} e \texttt{height\_cm}. Este método define como limites aceitáveis o primeiro e o terceiro quartil alargados por uma vez e meia o intervalo interquartil. Em vez de eliminar as linhas fora destes limites, o grupo optou por uma estratégia de \textit{capping}, ou seja, os valores extremos foram limitados ao valor da fronteira mais próxima. A vantagem desta abordagem é não perder linhas, aproveitando a restante informação do registo, mesmo quando uma das suas variáveis apresentava um valor anómalo.
+
+\section{Resultado Final}
+Depois de todas as operações, o conjunto limpo guardado em \texttt{cleaned\_data.csv} ficou com 2233 linhas e 29 colunas, sem qualquer valor em falta. A validação final do \textit{script} confirma que a coluna \texttt{sex} passou a ter apenas os valores \texttt{F} e \texttt{M}, e que a coluna \texttt{approach} ficou com quatro categorias bem definidas. Este conjunto serviu de base a todas as análises descritas nos capítulos seguintes.

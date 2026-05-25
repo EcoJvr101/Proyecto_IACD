@@ -1,0 +1,33 @@
+\chapter{Discussão Crítica e Conclusões}
+\label{chap:conclusoes}
+
+\section{Comparação dos Modelos}
+Os resultados da fase de modelação mostram uma diferença clara entre a regressão linear e os modelos baseados em árvores. A regressão linear obteve o pior desempenho, com um coeficiente de determinação de 0,655. A \textit{random forest} e o \textit{gradient boosting} ficaram bastante acima, com valores de 0,796 e 0,783 respetivamente.
+
+A razão para o desempenho mais fraco da regressão linear está na sua própria natureza. Este modelo assume que a relação entre as variáveis e o resultado é linear, ou seja, que cada variável contribui de forma fixa e independente das outras. A perda de peso, porém, é um processo biológico complexo, em que fatores como a idade, o peso inicial e o tipo de dieta interagem entre si de formas não lineares. O efeito de uma dieta não é o mesmo num paciente jovem e num paciente mais velho, e a regressão linear não consegue captar esse tipo de interação.
+
+Os modelos baseados em árvores não têm essa limitação. Ao dividirem os dados sucessivamente segundo as várias variáveis, conseguem representar interações e relações não lineares de forma natural. O \textit{gradient boosting} e a \textit{random forest} combinam ainda muitas árvores, o que reduz o sobreajuste que afetaria uma árvore isolada. É essa capacidade de captar padrões complexos que explica o seu melhor desempenho.
+
+Entre os dois modelos de conjunto, a \textit{random forest} obteve neste trabalho um resultado ligeiramente superior ao do \textit{gradient boosting}. Os dois modelos são, ainda assim, de qualidade próxima, e ambos seriam escolhas defensáveis. O grupo considera a \textit{random forest} como o melhor modelo deste estudo, por ter apresentado o maior coeficiente de determinação e o menor erro no conjunto de teste.
+
+\section{Interpretação dos Resultados}
+A conclusão mais sólida de todo o trabalho é que o resultado de uma dieta depende sobretudo do comportamento do paciente. A adesão ao plano e a motivação foram, em todas as fases da análise, os fatores mais ligados à perda de peso. Em termos práticos, isto sugere que, para um profissional de saúde, garantir que o paciente segue o plano é mais determinante do que a escolha entre uma dieta e outra.
+
+O tipo de dieta tem influência, mas pequena. A diferença de perda média entre o melhor e o pior tipo de dieta foi de cerca de 3 kg. O perfil do nutricionista mostrou um efeito moderado, com a abordagem mais exigente associada a melhores resultados, enquanto a especialidade se mostrou praticamente irrelevante.
+
+Importa sublinhar que o melhor modelo consegue prever a perda de peso com um erro médio na ordem dos 3,3 kg, usando apenas informação conhecida antes do início da dieta. Este resultado mostra que existe valor preditivo real nas características do paciente, da dieta e do nutricionista, mesmo sem recorrer a dados de adesão.
+
+\section{Limitações do Trabalho}
+O grupo identificou várias limitações que condicionam a leitura dos resultados. A primeira diz respeito à variável de resultado. No conjunto de dados, todos os programas registaram perda de peso, sem um único caso de ganho ou de manutenção. Um conjunto de dados realista de acompanhamento nutricional teria também casos de insucesso. Esta ausência faz com que o problema não distinga propriamente sucesso de fracasso, mas sim graus de sucesso.
+
+A segunda limitação está na divisão dos dados. O \textit{script} de modelação usa uma divisão de 80\% para treino e 20\% para teste. O enunciado sugeria uma divisão diferente, com conjuntos de treino, validação e teste, e uma parte reservada não utilizada. Numa versão futura, ajustar a divisão a esse esquema permitiria uma otimização de hiperparâmetros mais rigorosa e uma avaliação mais robusta.
+
+A terceira limitação é que o trabalho se centrou na previsão da quantidade de peso perdido, tratada como regressão. Uma extensão natural seria abordar também o problema como classificação, definindo uma variável binária de sucesso e prevendo diretamente a probabilidade de uma dieta resultar.
+
+Por fim, a deteção dos cinco registos anómalos no \textit{clustering}, com motivação fora de escala, mostra que ainda podem existir outros erros de qualidade não detetados no conjunto de dados.
+
+\section{Trabalho Futuro}
+A partir das limitações identificadas, o grupo aponta algumas direções de melhoria. A primeira seria trabalhar com um conjunto de dados que incluísse casos de insucesso reais, tornando os modelos capazes de distinguir bons e maus resultados. A segunda seria implementar o esquema de divisão de dados sugerido no enunciado e usar essa estrutura para otimizar os hiperparâmetros dos modelos. A terceira seria acrescentar um modelo de classificação do sucesso da dieta, complementando a abordagem de regressão já desenvolvida.
+
+\section{Conclusão}
+O trabalho percorreu todas as etapas de um processo de análise de dados, da integração dos quatro ficheiros até à aplicação e discussão de modelos de previsão. As principais conclusões são que o comportamento do paciente, sobretudo a adesão ao plano, é o fator mais determinante para o resultado de uma dieta, e que é possível prever a perda de peso com um erro médio de cerca de 3,3 kg usando apenas informação disponível à partida. O processo permitiu ainda detetar, através do \textit{clustering}, problemas de qualidade nos dados que não eram visíveis de outra forma. As limitações identificadas mostram que estas conclusões devem ser entendidas no contexto do conjunto de dados fornecido, mas a metodologia desenvolvida é aplicável a dados mais completos.

@@ -1,0 +1,67 @@
+\documentclass[11pt,a4paper,twoside,openright]{report}
+
+% --- pacotes essenciais -------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{acronym}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{indentfirst}
+\usepackage{xcolor}
+
+\geometry{a4paper, margin=2.5cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue
+}
+
+% --- inicio do documento ------------------------------------------------
+\begin{document}
+
+% capa
+\input{capa.tex}
+
+% paginas iniciais sem numeracao de capitulo
+\pagenumbering{roman}
+
+\input{agradecimentos.tex}
+\newpage
+
+\tableofcontents
+\newpage
+
+\listoffigures
+\newpage
+
+\listoftables
+\newpage
+
+\input{acronimos.tex}
+\newpage
+
+% corpo do documento
+\pagenumbering{arabic}
+
+\input{capitulo-1.tex}
+\input{capitulo-2.tex}
+\input{capitulo-3.tex}
+\input{capitulo-4.tex}
+\input{capitulo-5.tex}
+\input{capitulo-6.tex}
+
+% bibliografia
+\bibliographystyle{plain}
+\bibliography{bibliografia}
+
+\end{document}

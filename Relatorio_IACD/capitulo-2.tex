@@ -1,0 +1,35 @@
+\chapter{Integração de Dados}
+\label{chap:integracao}
+
+\section{Os Quatro Ficheiros de Origem}
+Os dados foram fornecidos em quatro ficheiros \ac{CSV} distintos, cada um correspondente a uma parte do problema. O ficheiro \texttt{patients.csv} contém os registos dos pacientes, com 1000 linhas e atributos como sexo, idade, altura, peso inicial, \ac{IMC}, hábito tabágico, horas de sono e um indicador de motivação. O ficheiro \texttt{nutritionists.csv} descreve os 20 nutricionistas, com a sua abordagem de acompanhamento, anos de experiência e especialidade. O ficheiro \texttt{diets.csv} caracteriza os 10 planos alimentares, indicando o tipo de dieta e a sua composição em macronutrientes. Por fim, o ficheiro \texttt{outcomes.csv} regista 2523 programas de dieta, cada um ligando um paciente, um nutricionista e uma dieta a um resultado medido ao fim de seis meses.
+
+A relação entre os ficheiros faz-se através de identificadores. Cada programa em \texttt{outcomes.csv} refere um \texttt{patient\_id}, um \texttt{nutritionist\_id} e um \texttt{diet\_id}, que funcionam como chaves para os outros três ficheiros.
+
+\section{Estratégia de Junção}
+A integração foi implementada no \textit{script} \texttt{data\_integration.py}, recorrendo à biblioteca \textit{pandas}~\cite{pandas}. O grupo optou por usar o ficheiro \texttt{outcomes.csv} como tabela central, uma vez que é o que tem mais linhas e o que representa a unidade de análise do problema, ou seja, um programa de dieta com o seu resultado.
+
+A partir dessa tabela central foram feitas três junções do tipo \textit{left join}. A primeira liga cada programa aos dados do respetivo paciente pela coluna \texttt{patient\_id}. A segunda junta as características da dieta pela coluna \texttt{diet\_id}. A terceira acrescenta a informação do nutricionista pela coluna \texttt{nutritionist\_id}. A escolha do \textit{left join} garante que nenhum programa é perdido durante a integração, mesmo que algum identificador não tenha correspondência nos ficheiros secundários.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Ficheiro} & \textbf{Linhas} & \textbf{Colunas} \\
+\hline
+\texttt{patients.csv} & 1000 & 11 \\
+\texttt{nutritionists.csv} & 20 & 5 \\
+\texttt{diets.csv} & 10 & 9 \\
+\texttt{outcomes.csv} & 2523 & 9 \\
+\hline
+\texttt{merged\_data.csv} & 2523 & 31 \\
+\hline
+\end{tabular}
+\caption{Dimensão dos ficheiros de origem e do conjunto integrado.}
+\label{tab:ficheiros}
+\end{table}
+
+\section{Resultado da Integração}
+O conjunto integrado, guardado em \texttt{merged\_data.csv}, ficou com 2523 linhas e 31 colunas, como mostra a tabela \ref{tab:ficheiros}. O número de linhas mantém-se igual ao de \texttt{outcomes.csv}, o que confirma que a junção não duplicou nem eliminou programas. O \textit{script} imprime na consola as dimensões dos quatro ficheiros originais e a dimensão do conjunto final, precisamente para permitir esta verificação. Cada linha passou a conter, num só local, toda a informação necessária para analisar um programa de dieta: o perfil do paciente, as características da dieta seguida, o perfil do nutricionista e o resultado obtido.
+
+Já nesta fase ficou visível que o conjunto integrado tinha problemas de qualidade. Várias colunas apresentavam valores em falta, algumas colunas pareciam repetidas e os campos de texto tinham representações inconsistentes. O tratamento destes problemas é descrito no capítulo seguinte.
