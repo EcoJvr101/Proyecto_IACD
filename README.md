@@ -1,7 +1,9 @@
 Elaborado por: 
 
 Leandro Apolo N: 55459
+
 Jorge Altamirano N: 55456
+
 Jose Gordon N: 55432
 
 
