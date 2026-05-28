@@ -79,7 +79,7 @@ Módulo dedicado a extrair percepções de negócio e entender a distribuição 
   * *Boxplot por Gênero*: Distribuição de perda de peso entre homens e mulheres.
 * **Insights**: Fornece respostas automáticas no console sobre a dieta com maior perda média, a abordagem mais eficaz do profissional de nutrição e diferenças significativas entre sexos.
 
-### 👥 4. Agrupamento - Clustering (`clustering.py`)
+###  4. Agrupamento - Clustering (`clustering.py`)
 Identificação de perfis e segmentos de pacientes a partir de comportamento homogêneo.
 * **Algoritmo**: Utiliza o **K-Means** configurado para segmentar a base em **4 clusters** de pacientes.
 * **Atributos Utilizados**: Idade (`age`), peso inicial (`baseline_weight_kg`), pontuação de motivação (`motivation_score`), nível de adesão (`adherence_ratio` ou `mean_adherence_pct`) e alteração de peso final (`weight_change_kg_6m`).
