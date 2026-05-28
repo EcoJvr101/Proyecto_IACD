@@ -52,9 +52,20 @@ def main():
     
     print(f"Dimensión de X (características) después de One-Hot Encoding: {X.shape}")
 
-    # 5. División de datos (80% / 20%)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
-    
+    # 5. División de datos (50% train / 30% validación / 10% test / 10% sin usar)
+    # Esquema indicado en el enunciado. El 10% final se reserva sin usar para evitar overfitting.
+    # Primero separamos el 10% no utilizado
+    X_resto, X_unused, y_resto, y_unused = train_test_split(
+        X, y, test_size=0.10, random_state=42)
+    # Del 90% restante: 50/30/10 equivale a 5/9, 3/9, 1/9
+    X_train, X_temp, y_train, y_temp = train_test_split(
+        X_resto, y_resto, test_size=4/9, random_state=42)
+    X_val, X_test, y_val, y_test = train_test_split(
+        X_temp, y_temp, test_size=1/4, random_state=42)
+
+    print(f"Tamano train: {len(X_train)}, validacion: {len(X_val)}, "
+          f"test: {len(X_test)}, sin usar: {len(X_unused)}")
+
     # 6. Entrenamiento de Modelos
     models = {
         'Linear Regression': LinearRegression(),
@@ -64,18 +75,18 @@ def main():
     
     results = []
 
-    # 7. Evaluación
+    # 7. Evaluación sobre el conjunto de validación
     for name, model in models.items():
-        # Entrenar el modelo
+        # Entrenar el modelo con el conjunto de entrenamiento
         model.fit(X_train, y_train)
         
-        # Predecir sobre el conjunto de prueba
-        y_pred = model.predict(X_test)
+        # Predecir sobre el conjunto de validación
+        y_pred = model.predict(X_val)
         
         # Calcular métricas
-        mse = mean_squared_error(y_test, y_pred)
+        mse = mean_squared_error(y_val, y_pred)
         rmse = np.sqrt(mse)
-        r2 = r2_score(y_test, y_pred)
+        r2 = r2_score(y_val, y_pred)
         
         results.append({
             'Model': name,
@@ -87,8 +98,17 @@ def main():
     # Crear y mostrar tabla comparativa
     results_df = pd.DataFrame(results)
     
-    print("\n--- Tabla Comparativa de Rendimiento de Modelos ---")
+    print("\n--- Tabla Comparativa de Rendimiento de Modelos (Validacion) ---")
     print(results_df.round(4).to_string(index=False))
+
+    # Evaluación final del mejor modelo sobre el conjunto de test
+    mejor_nombre = results_df.loc[results_df['R2 Score'].idxmax(), 'Model']
+    mejor_modelo = models[mejor_nombre]
+    y_pred_test = mejor_modelo.predict(X_test)
+    r2_test = r2_score(y_test, y_pred_test)
+    rmse_test = np.sqrt(mean_squared_error(y_test, y_pred_test))
+    print(f"\nMejor modelo: {mejor_nombre}")
+    print(f"Resultado en test -> R2: {r2_test:.4f}, RMSE: {rmse_test:.4f}")
 
 if __name__ == "__main__":
     main()
