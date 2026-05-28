@@ -67,7 +67,8 @@ def main():
             df[col] = df[col].fillna(mode_val)
 
     # 5. Tratamiento de Outliers (Método IQR y Capping)
-    outlier_cols = ['age', 'baseline_weight_kg', 'height_cm']
+    # Se incluye weight_change_kg_6m porque presentaba valores extremos (ej. -100 kg)
+    outlier_cols = ['age', 'baseline_weight_kg', 'height_cm', 'weight_change_kg_6m']
     for col in outlier_cols:
         if col in df.columns:
             Q1 = df[col].quantile(0.25)
