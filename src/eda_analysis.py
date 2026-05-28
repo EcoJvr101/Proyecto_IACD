@@ -60,7 +60,7 @@ def main():
     # b. Boxplot de diet_type vs weight_change_kg_6m
     if 'diet_type' in df.columns and target in df.columns:
         plt.figure(figsize=(10, 6))
-        sns.boxplot(x='diet_type', y=target, data=df,hue='diet_type',legend=True, palette='Set2')
+        sns.boxplot(x='diet_type', y=target, data=df,hue='diet_type',legend=False, palette='Set2')
         plt.title('Cambio de Peso por Tipo de Dieta', fontsize=14)
         plt.xlabel('Tipo de Dieta')
         plt.ylabel('Cambio de Peso a los 6 meses (kg)')
@@ -77,7 +77,7 @@ def main():
         # Ordenamos de menor a mayor cambio de peso para mejor lectura
         avg_approach = avg_approach.sort_values(by=target)
         
-        sns.barplot(x='approach', y=target, data=avg_approach,hue='approach',legend=True, palette='viridis')
+        sns.barplot(x='approach', y=target, data=avg_approach,hue='approach',legend=False, palette='viridis')
         plt.title('Promedio de Cambio de Peso por Enfoque del Nutricionista', fontsize=14)
         plt.xlabel('Enfoque del Nutricionista')
         plt.ylabel('Cambio de Peso Medio (kg)')
@@ -89,7 +89,7 @@ def main():
     # d. Boxplot de sex vs weight_change_kg_6m
     if 'sex' in df.columns and target in df.columns:
         plt.figure(figsize=(8, 6))
-        sns.boxplot(x='sex', y=target, data=df,hue='sex',legend=True, palette='Pastel1')
+        sns.boxplot(x='sex', y=target, data=df,hue='sex',legend=False, palette='Pastel1')
         plt.title('Cambio de Peso por Sexo del Paciente', fontsize=14)
         plt.xlabel('Sexo')
         plt.ylabel('Cambio de Peso a los 6 meses (kg)')

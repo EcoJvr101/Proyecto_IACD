@@ -26,13 +26,13 @@ def main():
         print("\n>>> Análise EDA <<<\n")
         eda_analysis.main()
 
-        #Clasification Model - Arboles de decision
-        print("\n>>> Clasification Model <<<")
-        classification_model.main()
-
         #Clustering
         print("\n>>> Algoritmo K-Means <<<\n")
         clustering.main()
+
+        #Clasification Model - Arboles de decision
+        print("\n>>> Clasification Model <<<")
+        classification_model.main()
 
         #PRedictive Model
         print("\n>>> Modelo Preditivo <<<\n")
