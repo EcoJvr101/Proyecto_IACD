@@ -5,6 +5,7 @@ import data_integration
 import eda_analysis
 import clustering
 import predictive_modeling
+import classification_model
 
 def main():
     print("="*40)
@@ -24,6 +25,10 @@ def main():
         #Data Analysis
         print("\n>>> Análise EDA <<<\n")
         eda_analysis.main()
+
+        #Clasification Model - Arboles de decision
+        print("\n>>> Clasification Model <<<")
+        classification_model.main()
 
         #Clustering
         print("\n>>> Algoritmo K-Means <<<\n")
